@@ -54,14 +54,7 @@ const HotCollections = () => {
           </div>
           
           {/* 5. Map over the live API data instead of a hardcoded array */}
-          <Slider
-            dots={true}
-            infinite={true}
-            speed={500}
-            slidesToShow={4}
-            slidesToScroll={1}
-          >
-            {collections.map((coll) => (
+              {collections.map((coll) => (
               <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={coll.id}>
                 <div className="nft_coll">
                   <div className="nft_wrap">
@@ -85,8 +78,7 @@ const HotCollections = () => {
                   <span>ERC-{coll.code}</span>
                 </div>
               </div>
-            </div>
-          ))}
+             ))}
         </div>
       </div>
     </section>
