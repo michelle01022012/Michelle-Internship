@@ -100,7 +100,7 @@ const NewItems = () => {
 
   // Slider Configurations
   const sliderSettings = {
-    dots: false,
+    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
