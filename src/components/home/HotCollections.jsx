@@ -5,6 +5,36 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+// Custom Left Arrow Component
+const PreviousArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <button
+      className={`${className} custom-slick-arrow prev-arrow`}
+      style={{ ...style, display: "block", left: "-25px", zIndex: 1 }}
+      onClick={onClick}
+      aria-label="Previous slide"
+    >
+      <i className="fa fa-chevron-left"></i>
+    </button>
+  );
+};
+
+// Custom Right Arrow Component
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <button
+      className={`${className} custom-slick-arrow next-arrow`}
+      style={{ ...style, display: "block", right: "-25px", zIndex: 1 }}
+      onClick={onClick}
+      aria-label="Next slide"
+    >
+      <i className="fa fa-chevron-right"></i>
+    </button>
+  );
+};
+
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,25 +60,28 @@ const HotCollections = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4, // Shows 4 items at the start
+    slidesToShow: 4, 
     slidesToScroll: 1,
+    arrows: true, // Ensures arrow rendering is globally active
+    prevArrow: <PreviousArrow />, // Registers custom left arrow
+    nextArrow: <NextArrow />, // Registers custom right arrow
     responsive: [
       {
-        breakpoint: 1024, // Desktop/Tablet landscape
+        breakpoint: 1024, 
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
         }
       },
       {
-        breakpoint: 768, // Tablet portrait
+        breakpoint: 768, 
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1
         }
       },
       {
-        breakpoint: 480, // Mobile phone
+        breakpoint: 480, 
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1
@@ -81,16 +114,14 @@ const HotCollections = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          
           <div className="col-lg-12">
-            {/* Wrapped the mapped array inside the Slider component */}
             <Slider {...settings}>
               {collections.map((coll) => (
-                <div key={coll.id} className="px-2"> {/* Added padding utility for spacing between items */}
+                <div key={coll.id} className="px-2">
                   <div className="nft_coll">
                     <div className="nft_wrap">
                       <Link to={`/item-details/${coll.nftId}`}>
-                        <img src={coll.nftImage} className="lazy img-fluid" alt={coll.title} />
+                        <img src={coll.nftImage} className="lazy img-fluid alt={coll.title}" />
                       </Link>
                     </div>
                     <div className="nft_coll_pp">
@@ -110,7 +141,6 @@ const HotCollections = () => {
               ))}
             </Slider>
           </div>
-          
         </div>
       </div>
     </section>
@@ -118,3 +148,4 @@ const HotCollections = () => {
 };
 
 export default HotCollections;
+ 
