@@ -67,6 +67,42 @@ const NextArrow = (props) => {
   );
 };
 
+// Pure JSX Skeleton Item mirroring the actual card dimensions
+const CollectionSkeleton = () => {
+  return (
+    <div className="px-2">
+      {/* Dynamic keyframe injection for standard pulse animation */}
+      <style>{`
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+        .skeleton-pulse {
+          animation: pulse 1.5s infinite ease-in-out;
+          background-color: #e0e0e0;
+        }
+      `}</style>
+      
+      <div className="nft_coll" style={{ background: "#fff", border: "1px solid #e0e0e0", borderRadius: "8px", padding: "15px", position: "relative" }}>
+        {/* Banner/Image wrapper block */}
+        <div className="skeleton-pulse" style={{ width: "100%", height: "150px", borderRadius: "6px" }}></div>
+        
+        {/* Profile Avatar circle */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "-30px", position: "relative", zIndex: 2 }}>
+          <div className="skeleton-pulse" style={{ width: "60px", height: "60px", borderRadius: "50%", border: "4px solid #fff" }}></div>
+        </div>
+        
+        {/* Text information lines */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "15px" }}>
+          <div className="skeleton-pulse" style={{ width: "60%", height: "16px", borderRadius: "4px", marginBottom: "8px" }}></div>
+          <div className="skeleton-pulse" style={{ width: "35%", height: "12px", borderRadius: "4px" }}></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +115,6 @@ const HotCollections = () => {
           "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
         );
         if (isMounted) {
-          // Extra safety check: confirm API data is actually an array
           setCollections(Array.isArray(response.data) ? response.data : []);
         }
       } catch (error) {
@@ -94,57 +129,49 @@ const HotCollections = () => {
     return () => { isMounted = false; };
   }, []);
 
-  // Slider settings configuration
-  const settings = {
+  // Base slider settings schema
+  const baseSettings = {
     dots: true,
-    infinite: collections.length > 4, // CRUCIAL: Disable infinite looping if there aren't enough items
     speed: 500,
-    slidesToShow: Math.min(4, collections.length > 0 ? collections.length : 1), // Avoid setting to 4 if array has fewer elements
     slidesToScroll: 1,
-    arrows: collections.length > 1, // Only render arrow loops if there is data to traverse
     prevArrow: <PreviousArrow />, 
     nextArrow: <NextArrow />, 
+  };
+
+  // Dynamic slider evaluation to prevent initialization crash cycles
+  const currentItemsCount = loading ? 4 : collections.length;
+  const settings = {
+    ...baseSettings,
+    infinite: currentItemsCount > 4,
+    slidesToShow: Math.min(4, currentItemsCount > 0 ? currentItemsCount : 1),
+    arrows: currentItemsCount > 1,
     responsive: [
       {
         breakpoint: 1024, 
         settings: {
-          slidesToShow: Math.min(3, collections.length > 0 ? collections.length : 1),
-          slidesToScroll: 1,
+          slidesToShow: Math.min(3, currentItemsCount > 0 ? currentItemsCount : 1),
+          infinite: currentItemsCount > 3,
         }
       },
       {
         breakpoint: 768, 
         settings: {
-          slidesToShow: Math.min(2, collections.length > 0 ? collections.length : 1),
-          slidesToScroll: 1
+          slidesToShow: Math.min(2, currentItemsCount > 0 ? currentItemsCount : 1),
+          infinite: currentItemsCount > 2,
         }
       },
       {
         breakpoint: 480, 
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          infinite: currentItemsCount > 1,
         }
       }
     ]
   };
 
-  if (loading) {
-    return (
-      <section id="section-collections" className="no-bottom">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 text-center">
-              <h2>Loading Hot Collections...</h2>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // CRUCIAL SAFETY OVERRIDE: Prevent mounting react-slick with 0 items
-  if (!collections || collections.length === 0) {
+  // Fallback fallback if loaded state yields empty results
+  if (!loading && collections.length === 0) {
     return (
       <section id="section-collections" className="no-bottom">
         <div className="container">
@@ -170,31 +197,37 @@ const HotCollections = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          <div className="col-lg-12" style={{ padding: "0 40px" }}> {/* Left/Right padding protects arrows from viewport clipping */}
+          <div className="col-lg-12" style={{ padding: "0 40px" }}>
             <Slider {...settings}>
-              {collections.map((coll) => (
-                <div key={coll.id || coll.nftId} className="px-2">
-                  <div className="nft_coll">
-                    <div className="nft_wrap">
-                      <Link to={`/item-details/${coll.nftId}`}>
-                        <img src={coll.nftImage} className="lazy img-fluid" alt={coll.title || "NFT Image"} />
-                      </Link>
+              {loading
+                ? // Render 4 pulse placeholders aligned within slider calculations
+                  Array(4)
+                    .fill(0)
+                    .map((_, index) => <CollectionSkeleton key={`skeleton-${index}`} />)
+                : // Render actual collections arrays when payload arrives
+                  collections.map((coll) => (
+                    <div key={coll.id || coll.nftId} className="px-2">
+                      <div className="nft_coll">
+                        <div className="nft_wrap">
+                          <Link to={`/item-details/${coll.nftId}`}>
+                            <img src={coll.nftImage} className="lazy img-fluid" alt={coll.title || "NFT"} />
+                          </Link>
+                        </div>
+                        <div className="nft_coll_pp">
+                          <Link to={`/author/${coll.authorId}`}>
+                            <img className="lazy pp-coll" src={coll.authorImage} alt="" />
+                          </Link>
+                          <i className="fa fa-check"></i>
+                        </div>
+                        <div className="nft_coll_info">
+                          <Link to="/explore">
+                            <h4>{coll.title}</h4>
+                          </Link>
+                          <span>ERC-{coll.code}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="nft_coll_pp">
-                      <Link to={`/author/${coll.authorId}`}>
-                        <img className="lazy pp-coll" src={coll.authorImage} alt="" />
-                      </Link>
-                      <i className="fa fa-check"></i>
-                    </div>
-                    <div className="nft_coll_info">
-                      <Link to="/explore">
-                        <h4>{coll.title}</h4>
-                      </Link>
-                      <span>ERC-{coll.code}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
             </Slider>
           </div>
         </div>
