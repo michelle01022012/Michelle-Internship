@@ -6,6 +6,7 @@ import Slider from "react-slick";
 const HotCollections = () => {
   // 1. Create a state variable to hold the API data
   const [collections, setCollections] = useState([]);
+  
   // 2. Create a loading state to handle network lag
   const [loading, setLoading] = useState(true);
 
@@ -18,12 +19,11 @@ const HotCollections = () => {
         );
         setCollections(response.data);
       } catch (error) {
-        console.error("Error fetching hot collections:", error);
+        console.error("Error fetching hot collections: ", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCollections();
   }, []);
 
@@ -54,22 +54,24 @@ const HotCollections = () => {
           </div>
           
           {/* 5. Map over the live API data instead of a hardcoded array */}
-              {collections.map((coll) => (
-              <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={coll.id}>
-                <div className="nft_coll">
-                  <div className="nft_wrap">
-                    {/* Dynamic link to details page using collection ID */}
-                    <Link to={`/item-details/${coll.nftId}`}>
-                      <img src={coll.nftImage} className="lazy img-fluid" alt={coll.title} />
-                    </Link>
-                  </div>
-                  <div className="nft_coll_pp">
-                    {/* Dynamic link to author page using author ID */}
-                    <Link to={`/author/${coll.authorId}`}>
-                      <img className="lazy pp-coll" src={coll.authorImage} alt="" />
-                    </Link>
-                    <i className="fa fa-check"></i>
-                  </div>
+          {collections.map((coll) => (
+            <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={coll.id}>
+              <div className="nft_coll">
+                <div className="nft_wrap">
+                  {/* Dynamic link to details page using collection ID */}
+                  <Link to={`/item-details/${coll.nftId}`}>
+                    <img
+                      src={coll.nftImage}
+                      className="lazy img-fluid"
+                      alt={coll.title}
+                    />
+                  </Link>
+                </div>
+                <div className="nft_coll_pp">
+                  <Link to={`/author/${coll.authorId}`}>
+                    <img className="lazy pp-coll" src={coll.authorImage} alt="" />
+                  </Link>
+                  <i className="fa fa-check"></i>
                 </div>
                 <div className="nft_coll_info">
                   <Link to="/explore">
@@ -78,7 +80,8 @@ const HotCollections = () => {
                   <span>ERC-{coll.code}</span>
                 </div>
               </div>
-             ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>
