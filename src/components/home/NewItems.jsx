@@ -43,6 +43,7 @@ const NextArrow = ({ className, style, onClick }) => (
     style={{
       ...style,
       display: "block",
+      fontWeight: "bold",
       fontSize: "24px",
       color: "#000",
       background: "none",
@@ -63,6 +64,7 @@ const PrevArrow = ({ className, style, onClick }) => (
     style={{
       ...style,
       display: "block",
+      fontWeight: "bold",
       fontSize: "24px",
       color: "#000",
       background: "none",
