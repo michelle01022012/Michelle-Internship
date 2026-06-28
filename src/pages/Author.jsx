@@ -27,7 +27,7 @@ const Author = () => {
     fetchSellers();
   }, []);
 
-  const author = sellers.find((seller) => seller.id === Number(id));
+  const author = sellers.find((seller) => String(seller.authorId) === id);
 
   return (
     <div id="wrapper">
