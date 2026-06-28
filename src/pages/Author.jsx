@@ -11,6 +11,8 @@ const Author = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
     const fetchSellers = async () => {
       try {
         const { data } = await axios.get(
@@ -54,10 +56,10 @@ const Author = () => {
                         <h4>
                           {author?.authorName || "Monica Lucas"}
                           <span className="profile_username">
-                            @{author?.tag || "monicaaaa"}
+                          {author?.tag || author?.authorName?.toLowerCase().replace(/\s/g, "")}
                           </span>
                           <span id="wallet" className="profile_wallet">
-                            {author?.address || "UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7"}
+                            {author?.address || "Wallet address not available"}
                           </span>
                           <button id="btn_copy" title="Copy Text">
                             Copy
