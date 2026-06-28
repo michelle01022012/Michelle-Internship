@@ -11,13 +11,12 @@ const Author = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [id]);
     const fetchSellers = async () => {
       try {
         const { data } = await axios.get(
           "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers"
         );
+
         setSellers(data);
       } catch (error) {
         console.error("Error fetching sellers: ", error);
@@ -29,8 +28,11 @@ const Author = () => {
     fetchSellers();
   }, []);
 
-  const author = sellers.find((seller) => String(seller.authorId) === id);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
+  const author = sellers.find((seller) => String(seller.authorId) === id);
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
