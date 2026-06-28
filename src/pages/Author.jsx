@@ -1,11 +1,32 @@
-import React from "react";
 import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
 import { Link, useParams } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const Author = ({ sellers = [] }) => {
+const Author = () => {
   const { id } = useParams();
+  const [sellers, setSellers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSellers = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers"
+        );
+        setSellers(data);
+      } catch (error) {
+        console.error("Error fetching sellers: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSellers();
+  }, []);
+
   const author = sellers.find((seller) => seller.id === Number(id));
 
   return (
