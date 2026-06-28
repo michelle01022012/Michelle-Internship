@@ -32,7 +32,15 @@ const Author = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  const author = sellers.find((seller) => String(seller.authorId) === id);
+ const author = sellers.find((seller) => String(seller.authorId) === id);
+
+if (loading) {
+  return <div>Loading...</div>;
+}
+
+if (!author) {
+  return <div>Author not found</div>;
+}
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
