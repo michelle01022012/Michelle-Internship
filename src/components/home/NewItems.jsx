@@ -36,48 +36,68 @@ const CountdownTimer = ({ expiryDate }) => {
   return timeLeft ? <div className="de_countdown">{timeLeft}</div> : null;
 };
 
-// --- Custom Minimalist Black Arrow Components ---
-const NextArrow = ({ className, style, onClick }) => (
-  <button
-    className={className}
-    style={{
-      ...style,
-      display: "block",
-      fontWeight: "bold",
-      fontSize: "24px",
-      color: "#000",
-      background: "none",
-      border: "none",
-      right: "-25px",
-      zIndex: 2
-    }}
-    onClick={onClick}
-    aria-label="Next slide"
-  >
-    <i className="fa fa-angle-right" style={{ color: "#000", fontSize: "32px" }}></i>
-  </button>
-);
+// Custom Left Arrow Component
+const PreviousArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <button
+      className={className} 
+      style={{ 
+        ...style, 
+        display: "flex", 
+        alignItems: "center",
+        justifyContent: "center",
+        left: "-35px", 
+        zIndex: 5,
+        width: "40px",
+        height: "40px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer"
+      }}
+      onClick={onClick}
+      aria-label="Previous slide"
+    >
+      <i 
+        className="fa fa-chevron-left" 
+        style={{ color: "#000000", fontSize: "24px", fontWeight: "bold" }}
+      ></i>
+      <style>{`.slick-prev::before { display: none !important; }`}</style>
+    </button>
+  );
+};
 
-const PrevArrow = ({ className, style, onClick }) => (
-  <button
-    className={className}
-    style={{
-      ...style,
-      display: "block",
-      fontWeight: "bold",
-      fontSize: "24px",
-      color: "#000",
-      background: "none",
-      border: "none",
-      left: "-40px",
-      zIndex: 2
-    }}
-    onClick={onClick}
-    aria-label="Previous slide"
-  >
-    <i className="fa fa-angle-left" style={{ color: "#000", fontSize: "32px" }}></i>
-  </button>
-);
+// Custom Right Arrow Component
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <button
+      className={className}
+      style={{ 
+        ...style, 
+        display: "flex", 
+        alignItems: "center",
+        justifyContent: "center",
+        right: "-35px", 
+        zIndex: 5,
+        width: "40px",
+        height: "40px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer"
+      }}
+      onClick={onClick}
+      aria-label="Next slide"
+    >
+      <i 
+        className="fa fa-chevron-right" 
+        style={{ color: "#000000", fontSize: "24px", fontWeight: "bold" }}
+      ></i>
+      <style>{`.slick-next::before { display: none !important; }`}</style>
+    </button>
+  );
+};
+
 
 // --- Main Component ---
 const NewItems = () => {
@@ -100,15 +120,17 @@ const NewItems = () => {
     fetchItems();
   }, []);
 
-  // Slider Configurations
-  const sliderSettings = {
+  // Base slider settings schema
+  const baseSettings = {
     dots: true,
-    infinite: true,
     speed: 500,
-    slidesToShow: 4,
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    prevArrow: <PreviousArrow />, 
+    nextArrow: <NextArrow />, 
+  };
+  const sliderSettings = {
+    ...baseSettings,
+    slidesToShow: 4,  
     responsive: [
       {
         breakpoint: 1024,
