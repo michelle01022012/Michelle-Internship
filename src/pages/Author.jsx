@@ -81,7 +81,7 @@ if (!author) {
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
                       <div className="profile_follower">
-                        {author?.followers || 573} followers
+                        {author?.followers ? `${author.followers} followers` : "Followers not available"}
                       </div>
                       <Link to="#" className="btn-main">
                         Follow
