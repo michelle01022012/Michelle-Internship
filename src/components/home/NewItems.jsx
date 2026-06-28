@@ -110,7 +110,7 @@ const NewItems = () => {
         const { data } = await axios.get(
           "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
         );
-        setItems(data);
+        setItems(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching NFT items:", error);
       } finally {
@@ -178,7 +178,7 @@ const NewItems = () => {
             ))
           ) : (
             // --- Active Carousel State with Pure Arrow Elements ---
-            <div style={{ position: "relative", padding: "0 20px" }}>
+            <div className="col-lg-12" style={{ position: "relative", padding: "0 40px" }}>
               <Slider {...sliderSettings}>
                 {items.map((item) => (
                   <div className="padding-slider-item" key={item.id} style={{ padding: "0 10px" }}>
