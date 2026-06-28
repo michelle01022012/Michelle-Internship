@@ -1,15 +1,17 @@
 import React from "react";
 import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 
-const Author = () => {
+const Author = ({ sellers = [] }) => {
+  const { id } = useParams();
+  const author = sellers.find((seller) => seller.id === Number(id));
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
         <div id="top"></div>
-
         <section
           id="profile_banner"
           aria-label="section"
@@ -25,15 +27,16 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={AuthorImage} alt="" />
-
+                      <img src={author?.authorImage || AuthorImage} alt="" />
                       <i className="fa fa-check"></i>
                       <div className="profile_name">
                         <h4>
-                          Monica Lucas
-                          <span className="profile_username">@monicaaaa</span>
+                          {author?.authorName || "Monica Lucas"}
+                          <span className="profile_username">
+                            @{author?.tag || "monicaaaa"}
+                          </span>
                           <span id="wallet" className="profile_wallet">
-                            UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7
+                            {author?.address || "UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7"}
                           </span>
                           <button id="btn_copy" title="Copy Text">
                             Copy
@@ -44,7 +47,9 @@ const Author = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">573 followers</div>
+                      <div className="profile_follower">
+                        {author?.followers || 573} followers
+                      </div>
                       <Link to="#" className="btn-main">
                         Follow
                       </Link>
