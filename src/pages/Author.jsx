@@ -66,7 +66,7 @@ if (!author) {
                         <h4>
                           {author?.authorName || "Monica Lucas"}
                           <span className="profile_username">
-                          {author?.tag || author?.authorName?.toLowerCase().replace(/\s/g, "")}
+                         @{author?.tag || author?.authorName?.toLowerCase().replace(/\s/g, "")}
                           </span>
                           <span id="wallet" className="profile_wallet">
                             {author?.address || "Wallet address not available"}
