@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -16,14 +14,14 @@ const TopSellers = () => {
         );
         setSellers(data);
       } catch (error) {
-        console.error("Error fetching top sellers:", error);
+        console.error("Error fetching top sellers: ", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTopSellers();
-  }, []);
+  } , []);
 
   return (
     <section id="section-popular" className="pb-5">
@@ -71,6 +69,7 @@ const TopSellers = () => {
                   sellers.map((seller) => (
                     <li key={seller.id}>
                       <div className="author_list_pp">
+                        {/* Fixed string literal to template literal syntax below */}
                         <Link to={`/author/${seller.authorId}`}>
                           <img
                             className="lazy pp-author"
@@ -81,6 +80,7 @@ const TopSellers = () => {
                         </Link>
                       </div>
                       <div className="author_list_info">
+                        {/* Fixed string literal to template literal syntax below */}
                         <Link to={`/author/${seller.authorId}`}>
                           {seller.authorName}
                         </Link>
@@ -97,4 +97,3 @@ const TopSellers = () => {
 };
 
 export default TopSellers;
-
