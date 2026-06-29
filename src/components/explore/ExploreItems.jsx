@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 // REUSABLE COUNTDOWN TIMER COMPONENT
-  const CountdownTimer = ({ expiryDate }) => {
+const CountdownTimer = ({ expiryDate }) => {
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
@@ -63,22 +63,15 @@ const ExploreItems = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Use likes endpoint directly if most liked is chosen, otherwise use base endpoint
-        const url = filter === "likes_high_to_low" 
-          ? "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore?filter=likes_high_to_low"
-          : "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore";
+        // Construct the base URL dynamically using your state value
+        let url = "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore";
+        if (filter) {
+          url += `?filter=${filter}`;
+        }
         
         const response = await axios.get(url);
-        let data = response.data;
-
-        // Apply remaining front-end sorting logic if needed
-        if (filter === "price_low_to_high") {
-          data.sort((a, b) => a.price - b.price);
-        } else if (filter === "price_high_to_low") {
-          data.sort((a, b) => b.price - a.price);
-        }
-
-        setItems(data);
+        // Set the response directly since backend now handles the sorting logic
+        setItems(response.data);
       } catch (error) {
         console.error("Error fetching NFT data:", error);
       } finally {
