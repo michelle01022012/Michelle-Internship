@@ -4,7 +4,7 @@ import EthImage from "../images/ethereum.svg";
 import axios from "axios";
 
 const ItemDetails = () => {
-  const { nftId } = useParams();
+  const { id: nftId } = useParams();
   const [nftData, setNftData] = useState(null);
   const [loading, setLoading] = useState(true);
 
