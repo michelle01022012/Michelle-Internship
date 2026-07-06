@@ -1,46 +1,49 @@
-import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
 import { Link, useParams } from "react-router-dom";
-import AuthorImage from "../images/author_thumbnail.jpg";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Author = () => {
   const { id } = useParams();
-  const [sellers, setSellers] = useState([]);
+  const [author, setAuthor] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSellers = async () => {
+    const fetchAuthor = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(
-          "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers"
+          `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${id}`,
         );
 
-        setSellers(data);
+        setAuthor(data);
       } catch (error) {
-        console.error("Error fetching sellers: ", error);
+        console.error("Error fetching author: ", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSellers();
-  }, []);
+    fetchAuthor();
+  }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
- const author = sellers.find((seller) => String(seller.authorId) === id);
+  const followAuthor = (event) => {
+    event.preventDefault();
+    setAuthor({ ...author, followers: author.followers + 1 });
+  };
 
-if (loading) {
-  return <div>Loading...</div>;
-}
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-if (!author) {
-  return <div>Author not found</div>;
-}
+  if (!author) {
+    return <div>Author not found</div>;
+  }
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -49,8 +52,7 @@ if (!author) {
           id="profile_banner"
           aria-label="section"
           className="text-light"
-          data-bgimage="url(images/author_banner.jpg) top"
-          style={{ background: `url(${AuthorBanner}) top` }}
+          style={{ background: `url(${author.authorImage}) center` }}
         ></section>
 
         <section aria-label="section">
@@ -60,16 +62,16 @@ if (!author) {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={author?.authorImage || AuthorImage} alt="" />
+                      <img src={author.authorImage} alt="" />
                       <i className="fa fa-check"></i>
                       <div className="profile_name">
                         <h4>
-                          {author?.authorName || "Monica Lucas"}
+                          {author.authorName}
                           <span className="profile_username">
-                         @{author?.tag || author?.authorName?.toLowerCase().replace(/\s/g, "")}
+                            @{author.tag}
                           </span>
                           <span id="wallet" className="profile_wallet">
-                            {author?.address || "Wallet address not available"}
+                            {author.address}
                           </span>
                           <button id="btn_copy" title="Copy Text">
                             Copy
@@ -81,9 +83,9 @@ if (!author) {
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
                       <div className="profile_follower">
-                        {author?.followers ? `${author.followers} followers` : "Followers not available"}
+                        {author.followers} followers
                       </div>
-                      <Link to="#" className="btn-main">
+                      <Link to="#" className="btn-main" onClick={followAuthor}>
                         Follow
                       </Link>
                     </div>
@@ -93,7 +95,11 @@ if (!author) {
 
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                 <AuthorItems authorId={author.authorId} />
+                  <AuthorItems
+                    authorId={author.authorId}
+                    authorImage={author.authorImage}
+                    items={author.nftCollection}
+                  />
                 </div>
               </div>
             </div>
