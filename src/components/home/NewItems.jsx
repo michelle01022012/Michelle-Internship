@@ -4,6 +4,8 @@ import axios from "axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css'; 
 
 // --- Custom Countdown Timer Component ---
 const CountdownTimer = ({ expiryDate }) => {
@@ -104,6 +106,21 @@ const NewItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 1. Initialize AOS instance on component mount
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, 
+      once: true,     
+    });
+  }, []);
+
+  // 2. Force layout recalculation once async data arrives and items render
+  useEffect(() => {
+    if (!loading && items.length > 0) {
+      AOS.refresh();
+    }
+  }, [loading, items]);
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -181,7 +198,8 @@ const NewItems = () => {
             <div className="col-lg-12" style={{ position: "relative", padding: "0 40px" }}>
               <Slider {...sliderSettings}>
                 {items.map((item) => (
-                  <div className="padding-slider-item" key={item.id} style={{ padding: "0 10px" }}>
+                  // 3. Applied data-aos attribute directly to the card container
+                  <div className="padding-slider-item" key={item.id} style={{ padding: "0 10px" }} data-aos="fade-left">
                     <div className="nft__item" style={{ margin: "0 5px" }}>
                       <div className="author_list_pp">
                         <Link to={`/author/${item.authorId}`} data-bs-toggle="tooltip" title={`Creator: ${item.title}`}>

@@ -1,10 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const TopSellers = () => {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // 1. Initialize AOS instance on component mount
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+    });
+  }, []);
+
+  // 2. Force layout recalculation once async data arrives and items render
+  useEffect(() => {
+    if (!loading && sellers.length > 0) {
+      AOS.refresh();
+    }
+  }, [loading, sellers]);
 
   useEffect(() => {
     const fetchTopSellers = async () => {
@@ -67,7 +84,8 @@ const TopSellers = () => {
                   ))
                 : // Dynamic Data State
                   sellers.map((seller) => (
-                    <li key={seller.id}>
+                    // 3. Applied data-aos attribute directly to the list item wrapper
+                    <li key={seller.id} data-aos="fade-left">
                       <div className="author_list_pp">
                         {/* Updated to dynamic backticks pathing using seller.authorId */}
                         <Link to={`/author/${seller.authorId}`}>
