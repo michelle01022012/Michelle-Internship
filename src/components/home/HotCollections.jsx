@@ -4,6 +4,8 @@ import axios from "axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css'; 
 
 // Custom Left Arrow Component
 const PreviousArrow = (props) => {
@@ -107,6 +109,21 @@ const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 1. Initialize AOS instance properties globally
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, 
+      once: true,     
+    });
+  }, []);
+
+  // 2. Force calculations refresh once asynchronous operations close out loading UI
+  useEffect(() => {
+    if (!loading && collections.length > 0) {
+      AOS.refresh();
+    }
+  }, [loading, collections]);
+
   useEffect(() => {
     let isMounted = true;
     const fetchCollections = async () => {
@@ -170,7 +187,7 @@ const HotCollections = () => {
     ]
   };
 
-  // Fallback fallback if loaded state yields empty results
+  // Fallback if loaded state yields empty results
   if (!loading && collections.length === 0) {
     return (
       <section id="section-collections" className="no-bottom">
@@ -206,7 +223,7 @@ const HotCollections = () => {
                     .map((_, index) => <CollectionSkeleton key={`skeleton-${index}`} />)
                 : // Render actual collections arrays when payload arrives
                   collections.map((coll) => (
-                    <div key={coll.id || coll.nftId} className="px-2">
+                    <div key={coll.id || coll.nftId} className="px-2" data-aos="fade-left">
                       <div className="nft_coll">
                         <div className="nft_wrap">
                           <Link to={`/item-details/${coll.nftId}`}>
